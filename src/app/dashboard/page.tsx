@@ -5,6 +5,7 @@ import { requireAuth } from "@/lib/auth";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import FilterTabs, { type DashboardFilter } from "@/components/dashboard/FilterTabs";
 import TransactionList, { type DashboardTransaction } from "@/components/dashboard/TransactionList";
+import { LogoutButton } from "@/components/auth/logout-button";
 
 const filterSchema = z.enum(["all", "INCOME", "EXPENSE"]);
 
@@ -68,9 +69,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
           <Link href="/dashboard/transactions/new" className="button button-primary">
             Tambah transaksi
           </Link>
-          <Link href="/login" className="button button-ghost">
-            Keluar
-          </Link>
+          <LogoutButton className="button button-ghost" />
         </div>
       </header>
 

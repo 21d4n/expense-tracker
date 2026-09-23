@@ -13,23 +13,27 @@ interface LogoutButtonProps {
  * Menggunakan Server Action logoutAction dan useTransition untuk status loading.
  */
 export function LogoutButton({
-  className = "button button-ghost text-xs text-danger/80 hover:text-danger hover:border-danger/40",
+  className = "button button-ghost",
   children,
 }: LogoutButtonProps) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <button
-      type="button"
-      disabled={isPending}
-      onClick={() => {
+    <form
+      action={() => {
         startTransition(async () => {
           await logoutAction();
         });
       }}
-      className={`cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      className="inline-flex"
     >
-      {isPending ? "Keluar..." : children ?? "Keluar"}
-    </button>
+      <button
+        type="submit"
+        disabled={isPending}
+        className={`cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+      >
+        {isPending ? "Keluar..." : children ?? "Keluar"}
+      </button>
+    </form>
   );
 }
