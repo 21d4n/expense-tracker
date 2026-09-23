@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+:root {
+  --background: #1a0f0a;
+  --surface: #2c1a10;
+  --surface-elevated: #3d2517;
+  --gold: #ca8a04;
+  --gold-bright: #daa520;
+  --parchment: #f5e6d3;
+  --muted: #bfa98a;
+  --line: #5c3d2e;
+  --success: #22c55e;
+  --danger: #f87171;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-gold: var(--gold);
+  --color-parchment: var(--parchment);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --font-display: "Cinzel", Georgia, serif;
+  --font-body: "Spectral", Georgia, serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--background); color: var(--parchment); font-family: var(--font-body); }
+a { color: inherit; text-decoration: none; }
+.font-display { font-family: var(--font-display); }
+.eyebrow { color: var(--gold); font-family: var(--font-display); font-size: 0.7rem; letter-spacing: 0.18em; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; box-shadow: 2px 4px 16px rgb(202 138 4 / 0.12); }
+.card-accent { border-top: 2px solid var(--gold); }
+.button { display: inline-flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid transparent; padding: 8px 22px; font-family: var(--font-display); font-size: 0.875rem; transition: 180ms ease; }
+.button:hover { transform: translateY(-1px); }
+.button-primary { background: var(--gold); border-color: var(--gold-bright); color: var(--background); box-shadow: 1px 3px 8px rgb(202 138 4 / 0.2); }
+.button-primary:hover { background: #b8780a; }
+.button-secondary { border-color: var(--gold); color: var(--gold); }
+.button-secondary:hover { background: rgb(202 138 4 / 0.1); }
+.button-ghost { color: var(--muted); padding-inline: 14px; }
+.button-ghost:hover { background: var(--surface-elevated); color: var(--parchment); }
+.button-lg { padding: 12px 30px; font-size: 1rem; }
+.stat-box { display: grid; gap: 5px; border: 1px solid var(--line); background: rgb(26 15 10 / 0.5); padding: 12px; font-family: var(--font-display); font-size: 0.65rem; letter-spacing: 0.08em; }
+.stat-box strong { color: var(--parchment); font-family: var(--font-body); font-size: 1rem; letter-spacing: 0; }
