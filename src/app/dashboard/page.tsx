@@ -1,35 +1,12 @@
-import { createHash } from "node:crypto";
 import Link from "next/link";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/auth";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import FilterTabs, { type DashboardFilter } from "@/components/dashboard/FilterTabs";
 import TransactionList, { type DashboardTransaction } from "@/components/dashboard/TransactionList";
 
-// TODO(P1): nama cookie + helper session kanonis milik Programmer 1 (src/lib/auth.ts).
-// Blok ini hanya penghuni sementara di file milik P2 agar tidak tabrakan file shared.
-// Saat P1 merge, ganti getDashboardUser() dengan helper P1 tanpa mengubah sisa halaman.
-const SESSION_COOKIE_NAME = "session";
-
 const filterSchema = z.enum(["all", "INCOME", "EXPENSE"]);
-
-type DashboardUser = { id: string; name: string };
-
-async function getDashboardUser(): Promise<DashboardUser | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!token) return null;
-
-  const tokenHash = createHash("sha256").update(token).digest("hex");
-  const session = await prisma.session.findUnique({
-    where: { tokenHash },
-    include: { user: { select: { id: true, name: true } } },
-  });
-  if (!session || session.expiresAt <= new Date()) return null;
-  return session.user;
-}
 
 function parseFilter(raw: string | string[] | undefined): DashboardFilter {
   const value = Array.isArray(raw) ? raw[0] : raw;
@@ -42,8 +19,9 @@ type DashboardPageProps = {
 };
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
-  const user = await getDashboardUser();
-  if (!user) redirect("/login");
+  // Guard session kanonis P1 (cookie session_token + cek expiry, BR-04).
+  // Anon otomatis redirect ke /login, konsisten dengan middleware.
+  const { user } = await requireAuth();
 
   const resolvedParams = await searchParams;
   const filter = parseFilter(resolvedParams.type);
