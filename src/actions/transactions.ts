@@ -17,7 +17,7 @@ import { prisma } from "@/lib/prisma";
 /* bawah HARUS disamakan dengan implementasi Programmer 1.              */
 /* ------------------------------------------------------------------ */
 
-const SESSION_COOKIE_NAME = "session";
+const SESSION_COOKIE_NAME = "session_token";
 const TRANSACTION_FILTER_COOKIE_NAME = "txn_filter";
 
 export type TransactionUser = {
