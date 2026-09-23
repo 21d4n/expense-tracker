@@ -40,6 +40,8 @@ export default function TransactionForm(props: TransactionFormProps) {
   const [today] = useState(todayLocal);
 
   const defaultType = isEdit ? props.defaultType : "EXPENSE";
+  // Live state agar highlight mengikuti pilihan aktif, bukan nilai awal statis.
+  const [selectedType, setSelectedType] = useState<"INCOME" | "EXPENSE">(defaultType);
   const defaultAmount = isEdit ? props.defaultAmount : "";
   const defaultDescription = isEdit ? props.defaultDescription : "";
   const defaultOccurredAt = isEdit ? props.defaultOccurredAt : today;
@@ -51,32 +53,34 @@ export default function TransactionForm(props: TransactionFormProps) {
         <div className="grid grid-cols-2 gap-3">
           <label
             className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 font-display text-sm ${
-              defaultType === "INCOME"
+              selectedType === "INCOME"
                 ? "border-gold bg-gold/10 text-gold"
                 : "border-line text-muted"
-            } has-checked:border-gold has-checked:bg-gold/10 has-checked:text-gold`}
+            }`}
           >
             <input
               type="radio"
               name="type"
               value="INCOME"
-              defaultChecked={defaultType === "INCOME"}
+              checked={selectedType === "INCOME"}
+              onChange={() => setSelectedType("INCOME")}
               className="sr-only"
             />
             Pemasukan
           </label>
           <label
             className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 font-display text-sm ${
-              defaultType === "EXPENSE"
+              selectedType === "EXPENSE"
                 ? "border-gold bg-gold/10 text-gold"
                 : "border-line text-muted"
-            } has-checked:border-gold has-checked:bg-gold/10 has-checked:text-gold`}
+            }`}
           >
             <input
               type="radio"
               name="type"
               value="EXPENSE"
-              defaultChecked={defaultType === "EXPENSE"}
+              checked={selectedType === "EXPENSE"}
+              onChange={() => setSelectedType("EXPENSE")}
               className="sr-only"
             />
             Pengeluaran
