@@ -108,14 +108,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   }));
 
   return (
-    <main className="mx-auto grid max-w-6xl gap-8 px-6 py-10 lg:px-8">
-      <header className="flex flex-wrap items-center justify-between gap-4">
+    <main className="mx-auto grid max-w-6xl gap-8 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+      <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
         <div>
-          <p className="eyebrow">PAPAN PETUALANGAN</p>
-          <h1 className="mt-2 font-display text-3xl font-bold text-parchment">Halo, {user.name}</h1>
+          <p className="text-sm font-medium text-primary">Expense Tracker</p>
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-text-primary sm:text-3xl">Halo, {user.name}</h1>
+          <p className="mt-1 text-sm text-text-secondary">Pantau keuangan dan budget bulananmu.</p>
         </div>
-        <div className="flex flex-wrap gap-3">
-          {/* Route tambah milik Programmer 3; aksi logout milik Programmer 1. */}
+        <div className="flex w-full flex-wrap gap-3 sm:w-auto">
           <Link href="/dashboard/transactions/new" className="button button-primary">
             Tambah transaksi
           </Link>
@@ -138,7 +138,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       <section className="grid gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 className="font-display text-xl font-semibold text-parchment">Riwayat transaksi</h2>
+          <h2 className="text-xl font-semibold text-text-primary">Riwayat transaksi</h2>
           <FilterTabs active={filter} month={month} />
         </div>
         <TransactionList items={items} />

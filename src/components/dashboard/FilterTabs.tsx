@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import Link, { useLinkStatus } from "next/link";
 
 export type DashboardFilter = "all" | "INCOME" | "EXPENSE";
 
@@ -7,6 +9,11 @@ const TABS: { value: DashboardFilter; label: string }[] = [
   { value: "INCOME", label: "Pemasukan" },
   { value: "EXPENSE", label: "Pengeluaran" },
 ];
+
+function FilterPending() {
+  const { pending } = useLinkStatus();
+  return pending ? <span role="status" className="ml-1 text-xs">Memuat…</span> : null;
+}
 
 export default function FilterTabs({ active, month }: { active: DashboardFilter; month: string }) {
   return (
@@ -21,6 +28,7 @@ export default function FilterTabs({ active, month }: { active: DashboardFilter;
             className={isActive ? "button button-primary" : "button button-secondary"}
           >
             {tab.label}
+            <FilterPending />
           </Link>
         );
       })}

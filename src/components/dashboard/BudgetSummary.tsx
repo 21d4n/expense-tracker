@@ -42,9 +42,9 @@ export default function BudgetSummary({ month, amount, expense, remaining, usage
   if (amount === null) {
     return (
       <section aria-label={`Ringkasan budget ${period}`} className="card grid gap-4 p-6">
-        <h2 className="text-xl font-semibold">Budget {period}</h2>
-        <p className="text-sm text-muted">Belum ada budget untuk bulan ini. Tetapkan batas pengeluaran agar penggunaannya dapat dipantau.</p>
-        <p className="text-sm text-muted">
+        <h2 className="text-xl font-semibold text-text-primary">Budget {period}</h2>
+        <p className="text-sm text-text-secondary">Belum ada budget untuk bulan ini. Tetapkan batas pengeluaran agar penggunaannya dapat dipantau.</p>
+        <p className="text-sm text-text-secondary">
           Pengeluaran bulan terpilih: <strong className="text-lg text-danger tabular-nums">{formatBudgetRupiah(expense)}</strong>
         </p>
         <Link href={budgetHref} className="button button-primary w-fit">Set Budget</Link>
@@ -57,21 +57,21 @@ export default function BudgetSummary({ month, amount, expense, remaining, usage
   return (
     <section aria-label={`Ringkasan budget ${period}`} className="card grid gap-4 p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold">Budget {period}</h2>
+        <h2 className="text-xl font-semibold text-text-primary">Budget {period}</h2>
         <Link href={budgetHref} className="button button-secondary">Atur budget</Link>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <div>
-          <p className="text-sm text-muted">Budget bulanan</p>
-          <p className="text-xl font-semibold tabular-nums">{formatBudgetRupiah(amount)}</p>
+          <p className="text-sm text-text-secondary">Budget bulanan</p>
+          <p className="break-words text-xl font-semibold tabular-nums">{formatBudgetRupiah(amount)}</p>
         </div>
         <div>
-          <p className="text-sm text-muted">Pengeluaran bulan terpilih</p>
-          <p className="text-xl font-semibold tabular-nums">{formatBudgetRupiah(expense)}</p>
+          <p className="text-sm text-text-secondary">Pengeluaran bulan terpilih</p>
+          <p className="break-words text-xl font-semibold tabular-nums">{formatBudgetRupiah(expense)}</p>
         </div>
         <div>
-          <p className="text-sm text-muted">Sisa budget</p>
-          <p className="text-xl font-semibold tabular-nums">
+          <p className="text-sm text-text-secondary">Sisa budget</p>
+          <p className="break-words text-xl font-semibold tabular-nums">
             {remaining === null ? "Belum tersedia" : formatBudgetRupiah(remaining)}
           </p>
         </div>

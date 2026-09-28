@@ -10,8 +10,8 @@ export default function MonthSelector({ month, type }: { month: string; type: Da
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <label htmlFor="dashboard-month" className="text-sm font-medium">
-        Bulan budget
+      <label htmlFor="dashboard-month" className="text-sm font-medium text-text-primary">
+        Bulan anggaran
       </label>
       <input
         id="dashboard-month"
@@ -27,9 +27,9 @@ export default function MonthSelector({ month, type }: { month: string; type: Da
             router.push(`/dashboard?${new URLSearchParams({ type, month: selectedMonth })}`);
           });
         }}
-        className="min-h-10 rounded-lg border border-line bg-surface px-3 text-sm text-parchment focus-visible:outline-2 focus-visible:outline-offset-2"
+        className="min-h-10 rounded-lg border border-border bg-surface-elevated px-3 text-sm text-text-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-wait"
       />
-      <span role="status" aria-live="polite" className="text-sm text-muted">
+      <span role="status" aria-live="polite" className="text-sm text-text-secondary">
         {isPending ? "Memuat bulan…" : ""}
       </span>
     </div>
