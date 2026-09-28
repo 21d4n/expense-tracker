@@ -4,10 +4,12 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import FilterTabs, { type DashboardFilter } from "@/components/dashboard/FilterTabs";
+import MonthSelector from "@/components/dashboard/MonthSelector";
 import TransactionList, { type DashboardTransaction } from "@/components/dashboard/TransactionList";
 import { LogoutButton } from "@/components/auth/logout-button";
 
 const filterSchema = z.enum(["all", "INCOME", "EXPENSE"]);
+const monthSchema = z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/).refine((value) => value.slice(0, 4) !== "0000");
 
 function parseFilter(raw: string | string[] | undefined): DashboardFilter {
   const value = Array.isArray(raw) ? raw[0] : raw;
@@ -15,8 +17,25 @@ function parseFilter(raw: string | string[] | undefined): DashboardFilter {
   return parsed.success ? parsed.data : "all";
 }
 
+function currentJakartaMonth(): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "Asia/Jakarta",
+    year: "numeric",
+    month: "2-digit",
+  }).formatToParts(new Date());
+  const year = parts.find((part) => part.type === "year")!.value;
+  const month = parts.find((part) => part.type === "month")!.value;
+  return `${year}-${month}`;
+}
+
+function parseMonth(raw: string | string[] | undefined): string {
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  const parsed = monthSchema.safeParse(value);
+  return parsed.success ? parsed.data : currentJakartaMonth();
+}
+
 type DashboardPageProps = {
-  searchParams: Promise<{ type?: string | string[] }>;
+  searchParams: Promise<{ type?: string | string[]; month?: string | string[] }>;
 };
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {
@@ -26,6 +45,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
   const resolvedParams = await searchParams;
   const filter = parseFilter(resolvedParams.type);
+  const month = parseMonth(resolvedParams.month);
 
   // Ringkasan selalu global per user (BR-02); filter hanya memengaruhi riwayat.
   const [incomeAgg, expenseAgg, rows] = await Promise.all([
@@ -75,10 +95,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       <SummaryCards balance={balance} totalIncome={totalIncome} totalExpense={totalExpense} />
 
+      <MonthSelector month={month} type={filter} />
+
       <section className="grid gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="font-display text-xl font-semibold text-parchment">Riwayat transaksi</h2>
-          <FilterTabs active={filter} />
+          <FilterTabs active={filter} month={month} />
         </div>
         <TransactionList items={items} />
       </section>
