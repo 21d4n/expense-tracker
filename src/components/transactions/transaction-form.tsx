@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   createTransaction,
@@ -37,7 +38,17 @@ export default function TransactionForm(props: TransactionFormProps) {
   const isEdit = props.mode === "edit";
   const boundAction = isEdit ? updateTransaction.bind(null, props.id) : createTransaction;
   const [state, formAction, isPending] = useActionState(boundAction, INITIAL_STATE);
+  const router = useRouter();
   const [today] = useState(todayLocal);
+
+  // Sukses: navigasi client-side ke dashboard tanpa hard reload (FR-11).
+  // Server action sudah merevalidasi /dashboard dan /dashboard/budgets.
+  useEffect(() => {
+    if (state.ok) {
+      router.push("/dashboard");
+      router.refresh();
+    }
+  }, [state.ok, router]);
 
   const defaultType = isEdit ? props.defaultType : "EXPENSE";
   // Live state agar highlight mengikuti pilihan aktif, bukan nilai awal statis.
@@ -152,8 +163,14 @@ export default function TransactionForm(props: TransactionFormProps) {
         </p>
       ) : null}
 
-      <button type="submit" disabled={isPending} className="button button-primary min-h-[40px] w-full disabled:opacity-35">
-        {isPending ? "Menyimpan..." : isEdit ? "Simpan perubahan" : "Tambah transaksi"}
+      {state.ok && state.message ? (
+        <p role="status" className="rounded border border-success/50 bg-success/10 px-4 py-3 text-sm text-success">
+          {state.message} Mengalihkan...
+        </p>
+      ) : null}
+
+      <button type="submit" disabled={isPending || state.ok} aria-disabled={isPending || state.ok} className="button button-primary min-h-[40px] w-full disabled:opacity-35">
+        {isPending ? "Menyimpan..." : state.ok ? "Berhasil..." : isEdit ? "Simpan perubahan" : "Tambah transaksi"}
       </button>
     </form>
   );
