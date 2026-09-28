@@ -30,8 +30,8 @@ function todayLocal(): string {
 }
 
 const inputClass =
-  "w-full rounded border border-line bg-background px-4 py-3 text-parchment placeholder:text-muted/60 focus:border-gold focus:outline-none";
-const labelClass = "mb-2 block font-display text-sm tracking-wide text-muted";
+  "w-full rounded border border-border bg-surface-elevated px-4 py-3 text-text-primary placeholder:text-text-secondary/60 focus:border-primary focus:outline-none focus-visible:outline-2 focus-visible:outline-primary";
+const labelClass = "mb-2 block text-sm font-medium tracking-wide text-text-secondary";
 const errorClass = "mt-1 text-sm text-danger";
 
 export default function TransactionForm(props: TransactionFormProps) {
@@ -63,10 +63,10 @@ export default function TransactionForm(props: TransactionFormProps) {
         <legend className={labelClass}>Tipe transaksi</legend>
         <div className="grid grid-cols-2 gap-3">
           <label
-            className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 font-display text-sm ${
+            className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 text-sm focus-visible:outline-2 focus-visible:outline-primary ${
               selectedType === "INCOME"
-                ? "border-gold bg-gold/10 text-gold"
-                : "border-line text-muted"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-text-secondary"
             }`}
           >
             <input
@@ -80,10 +80,10 @@ export default function TransactionForm(props: TransactionFormProps) {
             Pemasukan
           </label>
           <label
-            className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 font-display text-sm ${
+            className={`flex min-h-[40px] cursor-pointer items-center justify-center rounded border px-4 py-3 text-sm focus-visible:outline-2 focus-visible:outline-primary ${
               selectedType === "EXPENSE"
-                ? "border-gold bg-gold/10 text-gold"
-                : "border-line text-muted"
+                ? "border-primary bg-primary/10 text-primary"
+                : "border-border text-text-secondary"
             }`}
           >
             <input
@@ -113,7 +113,7 @@ export default function TransactionForm(props: TransactionFormProps) {
           inputMode="decimal"
           placeholder="cth. 150000"
           defaultValue={defaultAmount}
-          className={inputClass}
+          className={`${inputClass} tabular-nums`}
           aria-invalid={Boolean(state.fieldErrors.amount)}
         />
         {state.fieldErrors.amount ? (

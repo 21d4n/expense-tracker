@@ -40,16 +40,16 @@ export default function DeleteTransactionButton({ id, description }: DeleteTrans
       <button
         type="button"
         onClick={() => setConfirming(true)}
-        className="button min-h-[40px] border border-danger/60 px-4 py-2 font-display text-sm text-danger hover:bg-danger/10"
+        className="button button-danger min-h-[40px] px-4 py-2 text-sm"
       >
         Hapus
       </button>
 
       {confirming ? (
         <div role="dialog" aria-modal="true" aria-label="Konfirmasi hapus transaksi" className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-6">
-          <div className="card card-accent w-full max-w-sm p-6">
-            <p className="eyebrow">HAPUS TRANSAKSI</p>
-            <p className="mt-3 text-sm leading-6 text-parchment">
+          <div className="card card-accent w-full max-w-sm bg-surface-elevated p-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">Hapus transaksi</p>
+            <p className="mt-3 text-sm leading-6 text-text-primary">
               Hapus transaksi &ldquo;{description}&rdquo;? Tindakan ini tidak dapat dibatalkan.
             </p>
             {error ? <p role="alert" className="mt-3 text-sm text-danger">{error}</p> : null}
@@ -66,7 +66,7 @@ export default function DeleteTransactionButton({ id, description }: DeleteTrans
                 type="button"
                 onClick={handleDelete}
                 disabled={isPending}
-                className="button min-h-[40px] bg-danger font-display text-sm text-background hover:brightness-110 disabled:opacity-35"
+                className="button button-danger min-h-[40px] text-sm disabled:opacity-35"
               >
                 {isPending ? "Menghapus..." : "Ya, hapus"}
               </button>
