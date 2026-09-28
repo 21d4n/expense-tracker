@@ -1,9 +1,9 @@
 import { formatRupiah } from "./format";
 
 type SummaryCardsProps = {
-  balance: number;
-  totalIncome: number;
-  totalExpense: number;
+  balance: string;
+  totalIncome: string;
+  totalExpense: string;
 };
 
 export default function SummaryCards({ balance, totalIncome, totalExpense }: SummaryCardsProps) {

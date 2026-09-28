@@ -82,9 +82,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     }),
   ]);
 
-  const totalIncome = Number(incomeAgg._sum.amount ?? 0);
-  const totalExpense = Number(expenseAgg._sum.amount ?? 0);
-  const balance = totalIncome - totalExpense;
+  const totalIncome = incomeAgg._sum.amount ?? new Prisma.Decimal(0);
+  const totalExpense = expenseAgg._sum.amount ?? new Prisma.Decimal(0);
+  const balance = totalIncome.minus(totalExpense);
   const monthlyExpense = monthlyExpenseAgg._sum.amount ?? new Prisma.Decimal(0);
   const budgetAmount = budget?.amount ?? null;
   const remaining = budgetAmount?.minus(monthlyExpense) ?? null;
@@ -102,7 +102,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const items: DashboardTransaction[] = rows.map((tx) => ({
     id: tx.id,
     type: tx.type,
-    amount: Number(tx.amount),
+    amount: tx.amount.toFixed(2),
     description: tx.description,
     occurredAt: tx.occurredAt.toISOString(),
   }));
@@ -123,7 +123,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         </div>
       </header>
 
-      <SummaryCards balance={balance} totalIncome={totalIncome} totalExpense={totalExpense} />
+      <SummaryCards
+        balance={balance.toFixed(2)}
+        totalIncome={totalIncome.toFixed(2)}
+        totalExpense={totalExpense.toFixed(2)}
+      />
 
       <MonthSelector month={month} type={filter} />
       <BudgetSummary

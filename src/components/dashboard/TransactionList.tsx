@@ -5,7 +5,7 @@ import { formatRupiah, formatTanggal } from "./format";
 export type DashboardTransaction = {
   id: string;
   type: "INCOME" | "EXPENSE";
-  amount: number;
+  amount: string;
   description: string;
   occurredAt: string;
 };
