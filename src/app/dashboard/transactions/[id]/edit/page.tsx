@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 
-import { getTransactionUser } from "@/actions/transactions";
+import { getCurrentUser } from "@/lib/auth";
 import TransactionForm from "@/components/transactions/transaction-form";
 import { prisma } from "@/lib/prisma";
 
@@ -10,7 +10,7 @@ type EditTransactionPageProps = {
 };
 
 export default async function EditTransactionPage({ params }: EditTransactionPageProps) {
-  const user = await getTransactionUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/login");
 
   const { id } = await params;
