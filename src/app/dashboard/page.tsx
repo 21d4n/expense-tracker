@@ -1,10 +1,13 @@
 import Link from "next/link";
+import { Prisma } from "@prisma/client";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth";
+import { getCurrentMonthWIB } from "@/lib/budget-month";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import FilterTabs, { type DashboardFilter } from "@/components/dashboard/FilterTabs";
 import MonthSelector from "@/components/dashboard/MonthSelector";
+import BudgetSummary from "@/components/dashboard/BudgetSummary";
 import TransactionList, { type DashboardTransaction } from "@/components/dashboard/TransactionList";
 import { LogoutButton } from "@/components/auth/logout-button";
 
@@ -17,21 +20,22 @@ function parseFilter(raw: string | string[] | undefined): DashboardFilter {
   return parsed.success ? parsed.data : "all";
 }
 
-function currentJakartaMonth(): string {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Jakarta",
-    year: "numeric",
-    month: "2-digit",
-  }).formatToParts(new Date());
-  const year = parts.find((part) => part.type === "year")!.value;
-  const month = parts.find((part) => part.type === "month")!.value;
-  return `${year}-${month}`;
-}
-
 function parseMonth(raw: string | string[] | undefined): string {
   const value = Array.isArray(raw) ? raw[0] : raw;
   const parsed = monthSchema.safeParse(value);
-  return parsed.success ? parsed.data : currentJakartaMonth();
+  return parsed.success ? parsed.data : getCurrentMonthWIB();
+}
+
+function jakartaMonthBounds(value: string): { start: Date; end: Date; year: number; monthNumber: number } {
+  const [year, monthNumber] = value.split("-").map(Number);
+  // Midnight WIB is 17:00 UTC on the previous day. setUTCFullYear handles years 1–99 correctly.
+  const start = new Date(0);
+  start.setUTCFullYear(year, monthNumber - 1, 1);
+  start.setUTCHours(-7, 0, 0, 0);
+  const end = new Date(0);
+  end.setUTCFullYear(year, monthNumber, 1);
+  end.setUTCHours(-7, 0, 0, 0);
+  return { start, end, year, monthNumber };
 }
 
 type DashboardPageProps = {
@@ -46,9 +50,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const resolvedParams = await searchParams;
   const filter = parseFilter(resolvedParams.type);
   const month = parseMonth(resolvedParams.month);
+  const { start, end, year, monthNumber } = jakartaMonthBounds(month);
 
   // Ringkasan selalu global per user (BR-02); filter hanya memengaruhi riwayat.
-  const [incomeAgg, expenseAgg, rows] = await Promise.all([
+  const [incomeAgg, expenseAgg, rows, budget, monthlyExpenseAgg] = await Promise.all([
     prisma.transaction.aggregate({
       _sum: { amount: true },
       where: { userId: user.id, type: "INCOME" },
@@ -63,11 +68,27 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       take: 30,
       select: { id: true, type: true, amount: true, description: true, occurredAt: true },
     }),
+    prisma.budget.findUnique({
+      where: { userId_year_month: { userId: user.id, year, month: monthNumber } },
+      select: { amount: true },
+    }),
+    prisma.transaction.aggregate({
+      _sum: { amount: true },
+      where: {
+        userId: user.id,
+        type: "EXPENSE",
+        occurredAt: { gte: start, lt: end },
+      },
+    }),
   ]);
 
   const totalIncome = Number(incomeAgg._sum.amount ?? 0);
   const totalExpense = Number(expenseAgg._sum.amount ?? 0);
   const balance = totalIncome - totalExpense;
+  const monthlyExpense = monthlyExpenseAgg._sum.amount ?? new Prisma.Decimal(0);
+  const budgetAmount = budget?.amount ?? null;
+  const remaining = budgetAmount?.minus(monthlyExpense) ?? null;
+  const usagePercent = budgetAmount ? monthlyExpense.div(budgetAmount).times(100) : null;
 
   const items: DashboardTransaction[] = rows.map((tx) => ({
     id: tx.id,
@@ -96,6 +117,13 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       <SummaryCards balance={balance} totalIncome={totalIncome} totalExpense={totalExpense} />
 
       <MonthSelector month={month} type={filter} />
+      <BudgetSummary
+        month={month}
+        amount={budgetAmount?.toFixed(2) ?? null}
+        expense={monthlyExpense.toFixed(2)}
+        remaining={remaining?.toFixed(2) ?? null}
+        usagePercent={usagePercent?.toFixed(2) ?? null}
+      />
 
       <section className="grid gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
