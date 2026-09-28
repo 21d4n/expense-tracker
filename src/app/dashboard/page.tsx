@@ -7,7 +7,7 @@ import { getCurrentMonthWIB } from "@/lib/budget-month";
 import SummaryCards from "@/components/dashboard/SummaryCards";
 import FilterTabs, { type DashboardFilter } from "@/components/dashboard/FilterTabs";
 import MonthSelector from "@/components/dashboard/MonthSelector";
-import BudgetSummary from "@/components/dashboard/BudgetSummary";
+import BudgetSummary, { type BudgetStatus } from "@/components/dashboard/BudgetSummary";
 import TransactionList, { type DashboardTransaction } from "@/components/dashboard/TransactionList";
 import { LogoutButton } from "@/components/auth/logout-button";
 
@@ -89,6 +89,15 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const budgetAmount = budget?.amount ?? null;
   const remaining = budgetAmount?.minus(monthlyExpense) ?? null;
   const usagePercent = budgetAmount ? monthlyExpense.div(budgetAmount).times(100) : null;
+  // Bandingkan nilai Decimal asli; pembulatan dua desimal hanya untuk teks UI.
+  const budgetStatus: BudgetStatus | null = usagePercent === null
+    ? null
+    : usagePercent.gt(100)
+      ? "exceeded"
+      : usagePercent.gte(80)
+        ? "warning"
+        : "safe";
+  const progressPercent = usagePercent === null ? null : usagePercent.gt(100) ? 100 : usagePercent.toNumber();
 
   const items: DashboardTransaction[] = rows.map((tx) => ({
     id: tx.id,
@@ -123,6 +132,8 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         expense={monthlyExpense.toFixed(2)}
         remaining={remaining?.toFixed(2) ?? null}
         usagePercent={usagePercent?.toFixed(2) ?? null}
+        status={budgetStatus}
+        progressPercent={progressPercent}
       />
 
       <section className="grid gap-4">
