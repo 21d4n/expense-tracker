@@ -1,9 +1,8 @@
-export function formatRupiah(value: number): string {
-  return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0,
-  }).format(value);
+export function formatRupiah(value: string): string {
+  const negative = value.startsWith("-");
+  const [whole, fraction] = (negative ? value.slice(1) : value).split(".");
+  const grouped = new Intl.NumberFormat("id-ID").format(BigInt(whole));
+  return `${negative ? "-" : ""}Rp${grouped}${fraction === "00" ? "" : `,${fraction}`}`;
 }
 
 export function formatTanggal(value: Date | string): string {
@@ -12,5 +11,6 @@ export function formatTanggal(value: Date | string): string {
     day: "numeric",
     month: "short",
     year: "numeric",
+    timeZone: "Asia/Jakarta",
   }).format(date);
 }

@@ -1,14 +1,21 @@
-import Link from "next/link";
+"use client";
+
+import Link, { useLinkStatus } from "next/link";
 
 export type DashboardFilter = "all" | "INCOME" | "EXPENSE";
 
-const TABS: { value: DashboardFilter; label: string; href: string }[] = [
-  { value: "all", label: "Semua", href: "/dashboard" },
-  { value: "INCOME", label: "Pemasukan", href: "/dashboard?type=INCOME" },
-  { value: "EXPENSE", label: "Pengeluaran", href: "/dashboard?type=EXPENSE" },
+const TABS: { value: DashboardFilter; label: string }[] = [
+  { value: "all", label: "Semua" },
+  { value: "INCOME", label: "Pemasukan" },
+  { value: "EXPENSE", label: "Pengeluaran" },
 ];
 
-export default function FilterTabs({ active }: { active: DashboardFilter }) {
+function FilterPending() {
+  const { pending } = useLinkStatus();
+  return pending ? <span role="status" className="ml-1 text-xs">Memuat…</span> : null;
+}
+
+export default function FilterTabs({ active, month }: { active: DashboardFilter; month: string }) {
   return (
     <nav aria-label="Filter transaksi" className="flex flex-wrap gap-2">
       {TABS.map((tab) => {
@@ -16,11 +23,12 @@ export default function FilterTabs({ active }: { active: DashboardFilter }) {
         return (
           <Link
             key={tab.value}
-            href={tab.href}
+            href={`/dashboard?${new URLSearchParams({ type: tab.value, month })}`}
             aria-current={isActive ? "page" : undefined}
             className={isActive ? "button button-primary" : "button button-secondary"}
           >
             {tab.label}
+            <FilterPending />
           </Link>
         );
       })}
