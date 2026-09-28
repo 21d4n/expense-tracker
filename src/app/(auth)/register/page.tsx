@@ -11,16 +11,19 @@ export default async function RegisterPage() {
   await requireGuest();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center px-4 py-12">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-12">
       <div className="mb-8 text-center">
         <Link
           href="/"
-          className="font-display text-lg font-bold tracking-[0.2em] text-gold transition-colors hover:text-gold-bright"
+          className="inline-flex items-center gap-2 text-base font-bold tracking-tight text-text-primary hover:text-primary transition-colors"
         >
-          EXPENSE TRACKER
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 border border-primary/30 text-primary font-bold text-sm">
+            ET
+          </div>
+          <span>Expense Tracker</span>
         </Link>
-        <p className="mt-2 text-sm text-muted">
-          Pintu masuk menuju catatan petualangan finansialmu
+        <p className="mt-2 text-sm text-text-secondary">
+          Mulai atur pengeluaran dan anggaran keuangan pribadi Anda
         </p>
       </div>
 
