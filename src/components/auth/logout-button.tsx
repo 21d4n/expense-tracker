@@ -9,11 +9,11 @@ interface LogoutButtonProps {
 }
 
 /**
- * Komponen tombol logout siap pakai (FR-08) dengan tema QuestUI.
- * Menggunakan Server Action logoutAction dan useTransition untuk status loading.
+ * Komponen tombol logout siap pakai (FR-08) dengan tema Fintech modern.
+ * Menggunakan Server Action logoutAction dan useTransition untuk status loading tanpa hard reload.
  */
 export function LogoutButton({
-  className = "button button-ghost",
+  className = "button button-ghost text-xs sm:text-sm font-medium text-text-secondary hover:text-danger hover:bg-danger/10 transition-colors",
   children,
 }: LogoutButtonProps) {
   const [isPending, startTransition] = useTransition();

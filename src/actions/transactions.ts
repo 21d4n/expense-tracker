@@ -1,43 +1,21 @@
 "use server";
 
-import { createHash } from "crypto";
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
+import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 /* ------------------------------------------------------------------ */
-/* Session — ADAPTER SEMENTARA milik Programmer 3 (FR-05/06/07)         */
-/* TODO(prog-1): ganti getTransactionUser() dengan helper resmi dari    */
-/* src/lib/auth.ts setelah branch feature/auth-session merge. Kontrak   */
-/* yang diharapkan: baca cookie session HttpOnly -> kembalikan user     */
-/* yang login, atau null bila tidak ada/kadaluarsa. Nama cookie di      */
-/* bawah HARUS disamakan dengan implementasi Programmer 1.              */
+/* Session — memakai helper resmi src/lib/auth.ts (FR-03, BR-04).       */
+/* getCurrentUser() membaca cookie session HttpOnly, memverifikasi      */
+/* expiry di server, dan membersihkan session kadaluarsa. Tidak pernah  */
+/* menerima userId dari client (SRS fase 2 §2 Identitas).               */
 /* ------------------------------------------------------------------ */
 
-const SESSION_COOKIE_NAME = "session_token";
 const TRANSACTION_FILTER_COOKIE_NAME = "txn_filter";
-
-export type TransactionUser = {
-  id: string;
-  name: string;
-};
-
-export async function getTransactionUser(): Promise<TransactionUser | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-  if (!token) return null;
-
-  const tokenHash = createHash("sha256").update(token).digest("hex");
-  const session = await prisma.session.findUnique({
-    where: { tokenHash },
-    include: { user: { select: { id: true, name: true } } },
-  });
-  if (!session || session.expiresAt <= new Date()) return null;
-  return session.user;
-}
 
 /* ------------------------------------------------------------------ */
 /* Tipe state & filter (type-only export, aman untuk "use server")      */
@@ -108,7 +86,7 @@ export async function createTransaction(
   _prevState: TransactionFormState,
   formData: FormData,
 ): Promise<TransactionFormState> {
-  const user = await getTransactionUser();
+  const user = await getCurrentUser();
   if (!user) return unauthorizedState();
 
   const parsed = transactionSchema.safeParse({
@@ -137,6 +115,7 @@ export async function createTransaction(
   }
 
   revalidatePath("/dashboard");
+  revalidatePath("/dashboard/budgets");
   redirect("/dashboard");
 }
 
@@ -145,7 +124,7 @@ export async function updateTransaction(
   _prevState: TransactionFormState,
   formData: FormData,
 ): Promise<TransactionFormState> {
-  const user = await getTransactionUser();
+  const user = await getCurrentUser();
   if (!user) return unauthorizedState();
 
   const parsed = transactionSchema.safeParse({
@@ -179,11 +158,12 @@ export async function updateTransaction(
   }
 
   revalidatePath("/dashboard");
+  revalidatePath("/dashboard/budgets");
   redirect("/dashboard");
 }
 
 export async function deleteTransaction(id: string): Promise<{ ok: boolean; message: string }> {
-  const user = await getTransactionUser();
+  const user = await getCurrentUser();
   if (!user) return { ok: false, message: "Sesi berakhir. Silakan masuk kembali." };
 
   try {
@@ -197,6 +177,7 @@ export async function deleteTransaction(id: string): Promise<{ ok: boolean; mess
   }
 
   revalidatePath("/dashboard");
+  revalidatePath("/dashboard/budgets");
   redirect("/dashboard");
 }
 

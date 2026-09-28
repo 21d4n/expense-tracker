@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getTransactionUser } from "@/actions/transactions";
+import { getCurrentUser } from "@/lib/auth";
 import TransactionForm from "@/components/transactions/transaction-form";
 
 export default async function NewTransactionPage() {
-  const user = await getTransactionUser();
+  const user = await getCurrentUser();
   if (!user) redirect("/login");
 
   return (
