@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 import { deleteTransaction } from "@/actions/transactions";
 
@@ -13,13 +14,21 @@ export default function DeleteTransactionButton({ id, description }: DeleteTrans
   const [confirming, setConfirming] = useState(false);
   const [error, setError] = useState("");
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   function handleDelete() {
+    // Cegah pengiriman ganda saat pending (SRS fase 2 §4.1).
+    if (isPending) return;
     setError("");
     startTransition(async () => {
       const result = await deleteTransaction(id);
-      // Sukses: server action melakukan redirect ke /dashboard.
-      if (!result.ok) {
+      if (result.ok) {
+        // Sukses: ambil ulang data dashboard tanpa hard reload (FR-11).
+        // Server action sudah merevalidasi /dashboard dan /dashboard/budgets.
+        // Posisi scroll dan filter ?type= tetap karena tidak pindah halaman.
+        setConfirming(false);
+        router.refresh();
+      } else {
         setError(result.message);
         setConfirming(false);
       }
