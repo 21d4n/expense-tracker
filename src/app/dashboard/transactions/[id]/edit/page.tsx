@@ -5,6 +5,11 @@ import { getCurrentUser } from "@/lib/auth";
 import TransactionForm from "@/components/transactions/transaction-form";
 import { prisma } from "@/lib/prisma";
 
+export const metadata = {
+  title: "Edit Transaksi — Expense Tracker",
+  description: "Perbarui catatan transaksi milikmu.",
+};
+
 type EditTransactionPageProps = {
   params: Promise<{ id: string }>;
 };
@@ -22,9 +27,9 @@ export default async function EditTransactionPage({ params }: EditTransactionPag
 
   return (
     <main className="mx-auto w-full max-w-2xl px-6 py-10">
-      <p className="eyebrow">UBAH TRANSAKSI</p>
-      <h1 className="mt-2 font-display text-3xl font-bold text-parchment">Edit transaksi</h1>
-      <p className="mt-2 text-sm leading-6 text-muted">Perbarui catatan transaksi milikmu.</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-text-secondary">Ubah transaksi</p>
+      <h1 className="mt-2 text-3xl font-bold text-text-primary">Edit transaksi</h1>
+      <p className="mt-2 text-sm leading-6 text-text-secondary">Perbarui catatan transaksi milikmu.</p>
 
       <div className="card card-accent mt-6 p-6 sm:p-8">
         <TransactionForm
