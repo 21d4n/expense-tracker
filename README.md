@@ -6,7 +6,7 @@ Aplikasi web untuk membantu pengguna mencatat, memantau, dan mengelola pemasukan
 
 Expense Tracker menggunakan akun pengguna dan session server-side agar setiap pengguna hanya dapat mengakses transaksi miliknya sendiri. Pengguna dapat melihat kondisi keuangan melalui saldo, total pemasukan, total pengeluaran, dan riwayat transaksi.
 
-Sistem dirancang sebagai MVP untuk praktikum dengan arsitektur sederhana, aman, dan mudah dikembangkan secara paralel oleh tiga programmer.
+Sistem dimulai sebagai MVP praktikum dengan arsitektur sederhana dan aman. Rencana pengembangan fase 2 tercatat dalam dokumentasi terpisah, tetap menggunakan proyek dan repositori yang sama.
 
 ## Fitur Utama
 
@@ -58,24 +58,24 @@ Saldo = Total Pemasukan - Total Pengeluaran
 
 ## Design UI
 
-UI mengikuti QuestUI Design System dengan tema fantasy RPG:
+UI fase 1 menggunakan tema fantasy RPG. Panduan aktif untuk pengembangan fase 2 ada di [`docs/design.md`](docs/design.md), dengan arah fintech gelap yang modern dan profesional:
 
-- Background cokelat gelap dan surface berlapis.
-- Gold sebagai warna aksi utama.
-- Cinzel untuk heading dan Spectral untuk body text.
-- Card dengan border, top accent, dan gold glow seperlunya.
+- Background navy/charcoal gelap dan surface yang jelas.
+- Biru sebagai warna aksi utama; status pengeluaran dan budget memakai teks serta warna yang sesuai.
+- Tipografi sans-serif dan hierarki angka yang mudah dibaca.
+- Kartu sederhana dengan border halus.
 - Responsive untuk desktop dan mobile.
 
 ## Dokumentasi
 
-- [`docs/prd.md`](docs/prd.md): kebutuhan produk dan acceptance criteria.
-- [`docs/srs.md`](docs/srs.md): spesifikasi sistem, business rules, dan security requirements.
-- [`docs/erd.md`](docs/erd.md): entitas, relasi, constraints, dan diagram ERD.
-- [`docs/design.md`](docs/design.md): panduan halaman dan komponen UI.
-- [`docs/tasks.md`](docs/tasks.md): pembagian tugas tiga programmer.
+- [`docs/prd.md`](docs/prd.md) dan [`docs/prd-phase-2.md`](docs/prd-phase-2.md): kebutuhan produk per fase.
+- [`docs/srs.md`](docs/srs.md) dan [`docs/srs-phase-2.md`](docs/srs-phase-2.md): spesifikasi sistem per fase.
+- [`docs/erd.md`](docs/erd.md) dan [`docs/erd-phase-2.md`](docs/erd-phase-2.md): model data per fase.
+- [`docs/design.md`](docs/design.md): panduan aktif UI fase 2.
+- [`docs/tasks.md`](docs/tasks.md) dan [`docs/tasks-phase-2.md`](docs/tasks-phase-2.md): pembagian tugas per fase.
 - [`docs/setup.md`](docs/setup.md): langkah setup lokal dan troubleshooting.
 
-## Pembagian Programmer
+## Pembagian Programmer Fase 1
 
 ### Programmer 1: Auth dan Session
 
@@ -89,7 +89,7 @@ Nama pengguna, saldo, total pemasukan, total pengeluaran, riwayat transaksi, ser
 
 Tambah, lihat, edit, hapus, filter transaksi, validasi transaksi, dan preferensi tampilan.
 
-Semua programmer memakai schema Prisma dan migration yang sama. Fondasi PM menyediakan database contract, struktur project, dokumentasi, dan konfigurasi bersama.
+Fase 2 dipimpin Devano Trestanto sebagai PM, dengan Farras Hilmy Zaidan (auth dan Set Budget), Dehar Zaidan Dzaki Amirullah (dashboard, filter dan budget read), serta Akmal Fazli (transaksi). Lihat [`docs/tasks-phase-2.md`](docs/tasks-phase-2.md) untuk kepemilikan file dan kontrak kerja paralel. Semua programmer memakai schema Prisma dan migration yang sama; PM menangani fondasi dan file bersama.
 
 ## Setup Lokal
 

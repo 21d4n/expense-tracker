@@ -1,5 +1,7 @@
 # ERD Expense Tracker
 
+Dokumen ini mencatat model fase 1. Penambahan entitas budget dijelaskan di [erd-phase-2.md](erd-phase-2.md).
+
 ## Entitas
 - **User:** identitas akun dan hash password.
 - **Session:** session server-side yang terkait ke user.

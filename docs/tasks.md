@@ -1,5 +1,7 @@
 # Pembagian Tugas
 
+Dokumen ini mencatat tugas fase 1. Pembagian PM dan programmer fase 2 ada di [tasks-phase-2.md](tasks-phase-2.md).
+
 Semua programmer mulai dari `main` terbaru. Shared layout, global styles, Prisma schema, dan konfigurasi tetap PM-owned setelah fondasi.
 
 ## Programmer 1 — Auth dan Session
