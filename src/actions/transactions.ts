@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { getCurrentUser } from "@/lib/auth";
@@ -116,7 +115,7 @@ export async function createTransaction(
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/budgets");
-  redirect("/dashboard");
+  return { ok: true, message: "Transaksi berhasil disimpan.", fieldErrors: {} };
 }
 
 export async function updateTransaction(
@@ -159,7 +158,7 @@ export async function updateTransaction(
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/budgets");
-  redirect("/dashboard");
+  return { ok: true, message: "Transaksi berhasil diubah.", fieldErrors: {} };
 }
 
 export async function deleteTransaction(id: string): Promise<{ ok: boolean; message: string }> {
@@ -178,7 +177,7 @@ export async function deleteTransaction(id: string): Promise<{ ok: boolean; mess
 
   revalidatePath("/dashboard");
   revalidatePath("/dashboard/budgets");
-  redirect("/dashboard");
+  return { ok: true, message: "Transaksi berhasil dihapus." };
 }
 
 /* ------------------------------------------------------------------ */
