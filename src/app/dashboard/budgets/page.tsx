@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getCurrentMonthWIB, getWIBMonthDateRange } from "@/actions/budgets";
+import { getCurrentMonthWIB, getWIBMonthDateRange } from "@/lib/budget-month";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { BudgetMonthSelector } from "@/components/budgets/budget-month-selector";
 import { BudgetStatusCard } from "@/components/budgets/budget-status-card";
@@ -28,7 +28,7 @@ export default async function BudgetsPage({ searchParams }: PageProps) {
   if (rawMonth && MonthRegex.test(rawMonth)) {
     selectedMonth = rawMonth;
   } else {
-    selectedMonth = await getCurrentMonthWIB();
+    selectedMonth = getCurrentMonthWIB();
   }
 
   const [yearStr, monthStr] = selectedMonth.split("-");

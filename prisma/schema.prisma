@@ -66,6 +66,5 @@ model Budget {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, year, month])
-  @@index([userId, year, month])
   @@map("budgets")
 }

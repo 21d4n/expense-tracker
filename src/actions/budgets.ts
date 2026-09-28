@@ -53,37 +53,6 @@ const BudgetSchema = z.object({
 });
 
 /**
- * Mendapatkan string bulan berjalan (YYYY-MM) berdasarkan zona waktu Asia/Jakarta.
- */
-export async function getCurrentMonthWIB(): Promise<string> {
-  const now = new Date();
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Jakarta",
-    year: "numeric",
-    month: "2-digit",
-  });
-  return formatter.format(now);
-}
-
-/**
- * Menghitung rentang tanggal UTC untuk satu bulan WIB (Asia/Jakarta).
- */
-export function getWIBMonthDateRange(year: number, month: number): {
-  startDate: Date;
-  endDate: Date;
-} {
-  // Awal bulan WIB: YYYY-MM-01 00:00:00+07:00 -> UTC = jam - 7
-  const startDate = new Date(Date.UTC(year, month - 1, 1, -7, 0, 0, 0));
-
-  // Awal bulan berikutnya WIB
-  const nextMonth = month === 12 ? 1 : month + 1;
-  const nextYear = month === 12 ? year + 1 : year;
-  const endDate = new Date(Date.UTC(nextYear, nextMonth - 1, 1, -7, 0, 0, 0));
-
-  return { startDate, endDate };
-}
-
-/**
  * Server Action untuk membuat atau memperbarui budget (FR-13, FR-17).
  * Identitas pengguna dijamin selalu dari session server-side (SEC-03).
  */
